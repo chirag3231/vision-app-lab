@@ -18,6 +18,7 @@
 
 
 
+
       #results span {
 
 	  margin: 5px 5px;
@@ -38,6 +39,7 @@
 
 
 
+
       h1 {
 
 	  position: fixed;
@@ -47,6 +49,7 @@
 	  left: 0;
 
       }
+
 
 
 
@@ -70,6 +73,7 @@
 
 
 
+
     <video autoplay="true" id="videoElement"></video>
 
     <button id="vision_button">Analyze</button>
@@ -79,6 +83,7 @@
     
 
     <script>
+
 
 
 
@@ -104,6 +109,7 @@
 
 
 
+
       // If we are here, we have the access token, prase it out and store in variable 
 
       var matches = document.location.href.match(/(.*)\#access_token\=(.*?)\&/);
@@ -119,6 +125,7 @@
       // hide the token from the URL
 
       history.pushState({},'', window.location.href.substr(0, window.location.href.search("#")));
+
 
 
 
@@ -146,13 +153,15 @@
 
 
 
+
       // We only get to work when the vision button is clicked
 
       document.querySelector("#vision_button").addEventListener('click', evt => {
 
 	  // extract image as base64, scale it down to reduce data transfer speed	  
 
-	  var scale = 0.25;
+let apikey = "AIzaSyDaVDOH_42KpszPQ_GjJG18Lb97-2Khgr4";	  
+var scale = 0.25;
 
 	  var canvas = document.createElement("canvas");
 
@@ -166,21 +175,21 @@
 
 
 
+
 	  // dataUrl contains base64 version of image
 
           var dataUrl = canvas.toDataURL();
 
 
 
+
 	  // Send image to google to analyze
 
-	  fetch('https://vision.googleapis.com/v1/images:annotate', {
+	  fetch('https://vision.googleapis.com/v1/images:annotate?key=${apikey}’, {
 
 	      method: 'POST',
 
 	      headers: {
-
-		  'Authorization': `Bearer ${token}`,
 
 		  'Content-Type': 'application/json'
 
@@ -194,7 +203,7 @@
 
 			  features: {
 
-			      type: 'LABEL_DETECTION'
+			      type: ‘WEB_DETECTION'
 
 			  },
 
@@ -224,11 +233,12 @@
 
 	      results.innerHTML = '';
 
-	      json.responses[0].labelAnnotations.forEach( annotation => {
+	      json.responses[0].webAnnotations.forEach( annotation => {
 
 		  let description = document.createElement('span');
 
 		  let score = document.createElement('span');
+
 
 
 
@@ -240,7 +250,9 @@
 
 
 
+
 		  div.append(description,score);
+
 
 
 
